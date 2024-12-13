@@ -1,4 +1,5 @@
-﻿using Core.Database;
+﻿using Core;
+using Core.Database;
 using Infrastructure.Factory;
 using Infrastructure.Strategy.Implementation;
 using Microsoft.EntityFrameworkCore;
@@ -29,8 +30,7 @@ namespace Infrastructure.DependencyInjection
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
                 // Fetch storage types from configuration or use a default list
-                var storageTypes = configuration.GetSection("StorageSettings:EnabledTypes").Get<string[]>()
-                                  ?? new[] { "LocalFileSystem" };//"AmazonS3", "Database", 
+                var storageTypes = configuration.GetValue<string>("StorageSettings:EnabledTypes")?? new ( "Database") ;
 
                 // Create storages dynamically
                 var storages = factory.CreateStorages(storageTypes);

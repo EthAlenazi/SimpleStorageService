@@ -16,7 +16,7 @@ namespace Presentation.Controllers
             _storageHandler = storageHandler;
         }
 
-        [HttpPost("upload")]
+        [HttpPost("/v1/blobs")]
         public async Task<IActionResult> UploadFile(ObjectModel model)
         {
             try
@@ -28,7 +28,7 @@ namespace Presentation.Controllers
 
                 await _storageHandler.HandleUploadAsync(model);
 
-                return Ok($"File uploaded successfully to all storages.");
+                return Ok($"File uploaded successfully to the storage.");
             }
             catch (Exception ex)
             {
@@ -37,12 +37,13 @@ namespace Presentation.Controllers
             
         }
 
-        [HttpGet("download/{fileName}")]
-        public async Task<IActionResult> DownloadFile(string fileId)
+        [HttpGet("/v1/blobs/{id:guid}")]
+        public async Task<IActionResult> DownloadFile(Guid Id)
         {
             try
             {
-                var file = await _storageHandler.HandleDownloadAsync(fileId);
+                var id= Id.ToString();
+                var file = await _storageHandler.HandleDownloadAsync(id);
 
                 return Ok(file);
             }

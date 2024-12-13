@@ -21,18 +21,18 @@ namespace Infrastructure.Factory
             _settings = options.Value;
             _dbContext = context;
         }
-        public IEnumerable<IStorageStrategy> CreateStorages(IEnumerable<string> storageTypes = null)
+        public IStorageStrategy CreateStorages(string storageTypes = null)
         {
-            var types = storageTypes ?? new List<string> { _settings.DefaultStorage };
+            var type = storageTypes ?? new ( _settings.DefaultStorage );
 
-            return types.Select(type => (IStorageStrategy)(type switch
+            return  type switch
             {
                 "AmazonS3" => new AmazonS3Storage(),
                 "Database" => new DatabaseStorage(_dbContext),
                 "LocalFileSystem" => new LocalFileSystemStorage(),
                 "FTP" => new FtpStorage(),
                 _ => throw new ArgumentException($"Unknown storage type: {type}")
-            }));
+            };
         }
 
     }

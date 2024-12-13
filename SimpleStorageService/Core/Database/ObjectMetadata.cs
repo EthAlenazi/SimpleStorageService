@@ -8,7 +8,7 @@ namespace Core.Database
 {
     public class ObjectMetadata
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string FileName { get; set; }
         public long Size { get; set; }
         public DateTime UploadDate { get; set; }

@@ -5,44 +5,36 @@ namespace Infrastructure;
 
 public class StorageServiceHandler
 {
-    private readonly IEnumerable<IStorageStrategy> _storages;
+    private readonly IStorageStrategy _storages;
 
-    public StorageServiceHandler(IEnumerable<IStorageStrategy> storages)
+    public StorageServiceHandler(IStorageStrategy storages)
     {
         _storages = storages;
     }
 
     public async Task HandleUploadAsync(ObjectModel model)
     {
-        foreach (var storage in _storages)
-        {
-            await storage.UploadFileAsync(model.Data, model.Id);
-        }
+        //foreach (var storage in _storages)
+        //{
+            await _storages.UploadFileAsync(model.Data, model.Id);
+        //}
     }
 
     public async Task<OutputModel> HandleDownloadAsync(string fileId)
     {
-        var downloadTasks = _storages.Select(storage =>
+        try
         {
-            return Task.Run(async () =>
-            {
-                try
-                {
-                    return await storage.DownloadFileAsync(fileId);
-                }
-                catch
-                {
-                    return null;
-                }
-            });
-        });
+            var result = await _storages.DownloadFileAsync(fileId);
 
-        var completedTask = await Task.WhenAny(downloadTasks);
-        var result = await completedTask;
 
-        if (result == null)
-            throw new Exception("File not found in any storage");
+            if (result == null)
+                throw new Exception("File not found in any storage");
 
-        return result;
+            return result;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
