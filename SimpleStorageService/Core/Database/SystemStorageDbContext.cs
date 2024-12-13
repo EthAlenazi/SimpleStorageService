@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Core.Database
 {
@@ -12,15 +7,15 @@ namespace Core.Database
         public SystemStorageDbContext(DbContextOptions<SystemStorageDbContext> options)
          : base(options)
         { }
-        public DbSet<FileMetadata> FileMetadatas { get; set; }
-        public DbSet<FileContent> FileContents { get; set; }
+        public DbSet<ObjectContent> ObjectContent { get; set; }
+        public DbSet<ObjectMetadata> ObjectMetadata { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FileMetadata>()
-                .HasOne(fm => fm.FileContent)
+            modelBuilder.Entity<ObjectMetadata>()
+                .HasOne(fm => fm.Content)
                 .WithOne()
-                .HasForeignKey<FileContent>(fc => fc.Id);
+                .HasForeignKey<ObjectContent>(fc => fc.Id);
         }
     }
 }
