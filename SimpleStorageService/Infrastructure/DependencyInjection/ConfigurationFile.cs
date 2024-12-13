@@ -30,7 +30,7 @@ namespace Infrastructure.DependencyInjection
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
                 // Fetch storage types from configuration or use a default list
-                var storageType = configuration.GetValue<string>("StorageSettings:StorageType") ?? new ( "V") ;
+                var storageType = configuration.GetValue<string>("StorageSettings:StorageType");
 
                 // Create storages dynamically
                 var storages = factory.CreateStorages(storageType);

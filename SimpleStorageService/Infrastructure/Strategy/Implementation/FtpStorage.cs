@@ -1,23 +1,78 @@
 ﻿using Core;
+using FluentFTP;
 using Infrastructure.Strategy.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Strategy.Implementation
 {
-    public class FtpStorage: IStorageStrategy
+    public class FtpStorage : IStorageStrategy
     {
-        public Task<OutputModel> DownloadFileAsync(string fileId)
-        {
-            throw new NotImplementedException();
-        }
+        
+        string host =     Environment.GetEnvironmentVariable("FTP_HOST_KEY");//FTP IP
+        string username = Environment.GetEnvironmentVariable("FTP_USERNAME_KEY"); // FTP username
+        string password = Environment.GetEnvironmentVariable("AWS_PASSWORD_KEY");// FTP password
+        string localFilePath = @"D:\Test\File.txt";// Local file path
+        string remoteDirectory = "/htdocs";// Remote directory path
 
-        public Task UploadFileAsync(string objectContent, Guid fileId)
+
+        public async Task UploadFileAsync(string fileContent, Guid fileId)
         {
-            throw new NotImplementedException();
+            // Create an FTP client
+            using (var client = new AsyncFtpClient(host, username, password))
+            {
+                try
+                {
+                    await client.AutoConnect();
+
+                    string remoteFilePath = $"{remoteDirectory}/{fileId}_{Path.GetFileName(localFilePath)}";
+
+                    client.Config.RetryAttempts = 3;
+                    await client.UploadFile(localFilePath, remoteFilePath, FtpRemoteExists.Overwrite, true, FtpVerify.Retry);
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    await client.Disconnect();
+                }
+            }
+        }
+        public async Task<OutputModel> DownloadFileAsync(string fileId)
+        {
+            OutputModel result = new OutputModel();
+           using (var client = new AsyncFtpClient(host, username, password))
+            {
+                try
+                {
+                    await client.AutoConnect();
+
+                    string remoteFilePath = $"{remoteDirectory}/{fileId}_{Path.GetFileName(localFilePath)}";
+
+                    
+                    string retrievedFilePath = $@"D:\Test\Result\{Path.GetFileName(localFilePath)}"; 
+                    await client.DownloadFile(retrievedFilePath, remoteFilePath);
+
+                    Console.WriteLine($"File retrieved successfully to: {retrievedFilePath}");
+                    result.Data = retrievedFilePath;
+                    result.Size = retrievedFilePath.Length;
+                    result.Created_at = DateTime.Now;
+                    result.Id = fileId;
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    
+                    await client.Disconnect();
+                    
+                }
+            }
+
         }
     }
 }
