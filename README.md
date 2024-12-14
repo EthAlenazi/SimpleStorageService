@@ -1,8 +1,8 @@
-SimpleStorageService
+**SimpleStorageService**
 
 SimpleStorageService is a lightweight and straightforward storage service built using modern .NET technologies. This project serves as a practical implementation for managing file storage efficiently, demonstrating essential concepts in backend development.
 
-Features
+**Features**
 
 Upload and download files.
 
@@ -26,7 +26,7 @@ Implements Factory and Strategy design patterns for flexible and extensible stor
 
 Integrated JWT (JSON Web Token) authentication for secure API access.
 
-Prerequisites
+**Prerequisites**
 
 .NET 8.0 SDK or later.
 
@@ -34,7 +34,7 @@ Visual Studio or any other preferred code editor.
 
 A basic understanding of ASP.NET Core Web API.
 
-Setup
+**Setup**
 
 Clone the repository:
 
@@ -54,7 +54,7 @@ dotnet run
 
 Access the API locally at https://localhost:5001.
 
-Usage
+**Usage**
 
 Use tools like Postman or Swagger UI (provided with the project) to test the API.
 
@@ -70,15 +70,12 @@ POST /authenticate: Obtain a JWT token for secure access.
 
 Include the JWT token in the Authorization header for protected endpoints.
 
-Contributing
 
-Contributions are welcome! Feel free to fork the repository, make improvements, and submit a pull request.
-
-Acknowledgments
+**Acknowledgments**
 
 Special thanks to the open-source community for providing the tools and inspiration to develop this project.
 
-Note from the Developer
+**Note from the Developer**
 
 This is my first attempt at building a project like this, and it has been a fantastic learning experience. While I haven’t worked on storage services before, diving into this project has significantly enhanced my understanding of file management and backend services.
 
