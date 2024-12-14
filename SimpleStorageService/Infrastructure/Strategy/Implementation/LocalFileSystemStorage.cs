@@ -21,18 +21,18 @@ namespace Infrastructure.Strategy.Implementation
                 Directory.CreateDirectory(_storagePath);
         }
 
-        public Task UploadFileAsync(string fileContent, Guid fileId)
+        public async Task<string> UploadFileAsync(string fileContent, Guid fileId)
         {
             try
             {
                 var filePath = Path.Combine(_storagePath, fileId.ToString());
                 var data = Convert.FromBase64String(fileContent);
                 File.WriteAllBytes(filePath, data);
-                return Task.CompletedTask;
+                return "File uploaded successfully to Local server storages";
             }
             catch (Exception ex)
             {
-                throw ex;
+                return $"Error uploading file: {ex.Message}";
             }
         }
 

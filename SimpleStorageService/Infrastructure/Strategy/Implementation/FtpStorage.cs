@@ -1,20 +1,22 @@
-﻿using Core;
+﻿using Azure;
+using Core;
 using FluentFTP;
 using Infrastructure.Strategy.Interface;
+using System.Net;
 
 namespace Infrastructure.Strategy.Implementation
 {
     public class FtpStorage : IStorageStrategy
     {
         
-        string host =     Environment.GetEnvironmentVariable("FTP_HOST_KEY");//FTP IP
-        string username = Environment.GetEnvironmentVariable("FTP_USERNAME_KEY"); // FTP username
+        string host =     Environment.GetEnvironmentVariable("FTP_HOST_KEY");//FTP server IP 
+        string username = Environment.GetEnvironmentVariable("FTP_USERNAME_KEY");// FTP username
         string password = Environment.GetEnvironmentVariable("AWS_PASSWORD_KEY");// FTP password
         string localFilePath = @"D:\Test\File.txt";// Local file path
         string remoteDirectory = "/htdocs";// Remote directory path
 
 
-        public async Task UploadFileAsync(string fileContent, Guid fileId)
+        public async Task<string> UploadFileAsync(string fileContent, Guid fileId)
         {
             // Create an FTP client
             using (var client = new AsyncFtpClient(host, username, password))
@@ -28,11 +30,13 @@ namespace Infrastructure.Strategy.Implementation
                     client.Config.RetryAttempts = 3;
                     await client.UploadFile(localFilePath, remoteFilePath, FtpRemoteExists.Overwrite, true, FtpVerify.Retry);
 
+                    return "File uploaded successfully to FTP server storages";
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    return $"Error uploading file: {ex.Message}";
                 }
+
                 finally
                 {
                     await client.Disconnect();

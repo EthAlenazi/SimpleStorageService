@@ -1,7 +1,9 @@
-﻿using Core;
+﻿using Azure;
+using Core;
 using Core.Database;
 using Infrastructure.Strategy.Interface;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Infrastructure.Strategy.Implementation
 {
@@ -14,27 +16,40 @@ namespace Infrastructure.Strategy.Implementation
             _dbContext = dbContext;
         }
 
-        public async Task UploadFileAsync(string fileContent, Guid fileId)
+        public async Task<string> UploadFileAsync(string fileContent, Guid fileId)
         {
-            var DataContent = new ObjectContent
+            try
             {
-                Id = fileId,
-                Content = fileContent
-            };
+                var DataContent = new ObjectContent
+                {
+                    Id = fileId,
+                    Content = fileContent
+                };
 
-            var fileMetadata = new ObjectMetadata
+                var fileMetadata = new ObjectMetadata
+                {
+                    Id = fileId,
+                    FileName = fileId.ToString(),
+                    Size = DataContent.Content.Length,
+                    UploadDate = DateTime.UtcNow,
+                    Content = DataContent
+                };
+
+                await _dbContext.ObjectMetadata.AddAsync(fileMetadata);
+                await _dbContext.ObjectContent.AddAsync(DataContent);
+                await _dbContext.SaveChangesAsync();
+
+                return "File uploaded successfully to Database storages";
+
+
+            }
+            catch (Exception ex)
             {
-                Id= fileId,
-                FileName = fileId.ToString(),
-                Size = DataContent.Content.Length,
-                UploadDate = DateTime.UtcNow,
-                Content = DataContent
-            };
-
-            await _dbContext.ObjectMetadata.AddAsync(fileMetadata);
-            await _dbContext.ObjectContent.AddAsync(DataContent);
-            await _dbContext.SaveChangesAsync();
+                return $"Failed to upload file. Status code: {ex.Message}";
+            }
         }
+
+        
 
         public async Task<OutputModel> DownloadFileAsync(string fileId)
         {

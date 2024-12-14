@@ -12,12 +12,9 @@ public class StorageServiceHandler
         _storages = storages;
     }
 
-    public async Task HandleUploadAsync(ObjectModel model)
+    public async Task<string> HandleUploadAsync(ObjectModel model)
     {
-        //foreach (var storage in _storages)
-        //{
-            await _storages.UploadFileAsync(model.Data, model.Id);
-        //}
+        return await _storages.UploadFileAsync(model.Data, model.Id);
     }
 
     public async Task<OutputModel> HandleDownloadAsync(string fileId)

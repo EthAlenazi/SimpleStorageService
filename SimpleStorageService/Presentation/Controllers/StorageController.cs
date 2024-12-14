@@ -26,9 +26,9 @@ namespace Presentation.Controllers
                     return BadRequest("Invalid input: Provided DataBase64 string is not in a valid Base64 format.");
                 }
 
-                await _storageHandler.HandleUploadAsync(model);
+             var  result = await _storageHandler.HandleUploadAsync(model);
 
-                return Ok($"File uploaded successfully to the storage.");
+                return Ok(result);
             }
             catch (Exception ex)
             {

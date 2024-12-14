@@ -4,7 +4,7 @@ namespace Infrastructure.Strategy.Interface
 {
     public interface IStorageStrategy
     {
-        Task UploadFileAsync(string objectContent, Guid fileId);
+        Task<string> UploadFileAsync(string objectContent, Guid fileId);
         Task<OutputModel> DownloadFileAsync(string fileId);
 
     }
