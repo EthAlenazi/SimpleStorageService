@@ -49,20 +49,11 @@ namespace Infrastructure.Strategy.Implementation
             }
         }
 
-        
-
         public async Task<OutputModel> DownloadFileAsync(string fileId)
         {
             try
             {
                 var Id= new Guid(fileId);
-                //var fileContent = await _dbContext.ObjectContent.FirstOrDefaultAsync(f => f.Id == Id);
-                //if (fileContent == null)
-                //{
-                //    throw new FileNotFoundException("File content not found in the database.");
-                //}
-
-                // Ensure fileMetadata is fetched correctly
                 var fileMetadata = await _dbContext.ObjectMetadata
                     .Include(fm => fm.Content)
                     .FirstOrDefaultAsync(fm => fm.Id == Id);

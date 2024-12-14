@@ -1,10 +1,12 @@
 ﻿using Application;
 using Core;
 using Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/storage")]
     public class StorageController : ControllerBase
